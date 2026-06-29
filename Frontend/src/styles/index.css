@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@theme {
+  --color-primary: #10b981;
+  --color-secondary: #0f172a;
+}
+
+body {
+  @apply bg-secondary m-0 text-white min-h-screen w-full;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+#root {
+  @apply w-full h-[100dvh] flex flex-col;
+}
+
+@layer utilities {
+  .app-container {
+    @apply w-full h-[100dvh] relative overflow-hidden bg-secondary flex flex-col;
+  }
+}
+
