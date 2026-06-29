@@ -57,29 +57,37 @@ const MyRides = () => {
   };
 
   if (loading) {
-    return <div className="p-4 h-full flex items-center justify-center transition-colors" 
+    return <div className="page-shell flex items-center justify-center transition-colors" 
          style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>Loading rides...</div>;
   }
 
   return (
-    <div className="p-4 h-full overflow-y-auto pb-20 md:pb-0 transition-colors" 
+    <div className="page-shell transition-colors" 
          style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-          <Users style={{ color: colors.primary }} size={32} />
-          My Rides
-        </h1>
-        <p className="mb-8" style={{ color: colors.text.secondary }}>View and manage your posted rides</p>
+      <div className="page-inner max-w-5xl">
+        <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+          <div>
+            <p className="mb-2 text-sm font-extrabold uppercase" style={{ color: colors.primary }}>Ride control</p>
+            <h1 className="flex items-center gap-2 text-3xl font-extrabold md:text-4xl">
+              <Users style={{ color: colors.primary }} size={34} />
+              My Rides
+            </h1>
+            <p className="mt-2 font-medium" style={{ color: colors.text.secondary }}>View and manage your posted rides.</p>
+          </div>
+          <button onClick={() => navigate('/home')} className="primary-button">Create Ride</button>
+        </div>
 
         {rides.length === 0 ? (
-          <div className="p-12 rounded-2xl border text-center" 
-               style={{ backgroundColor: colors.bg.primary, borderColor: colors.border }}>
-            <Users size={48} style={{ color: colors.text.tertiary }} className="mx-auto mb-4" />
-            <p className="mb-4" style={{ color: colors.text.secondary }}>No rides posted yet</p>
+          <div className="surface rounded-2xl p-12 text-center" 
+               style={{ '--surface': colors.bg.primary, '--border': colors.border, '--shadow': colors.shadow }}>
+            <div className="icon-tile mx-auto mb-4 h-16 w-16" style={{ '--tile': colors.bg.tertiary, '--tile-fg': colors.primary }}>
+              <Users size={32} />
+            </div>
+            <p className="mb-2 text-xl font-extrabold">No rides posted yet</p>
+            <p className="mb-6 text-sm font-medium" style={{ color: colors.text.secondary }}>Start by choosing how you are arriving.</p>
             <button 
               onClick={() => navigate('/home')}
-              className="px-6 py-2 rounded-lg font-semibold transition"
-              style={{ backgroundColor: colors.primary, color: 'white' }}
+              className="primary-button"
             >
               Create a Ride
             </button>
@@ -87,11 +95,11 @@ const MyRides = () => {
         ) : (
           <div className="space-y-4">
             {rides.map((ride) => (
-              <div key={ride._id} className="p-6 rounded-xl border transition" 
-                   style={{ backgroundColor: colors.bg.primary, borderColor: colors.border }}>
+              <div key={ride._id} className="soft-card" 
+                   style={{ '--surface': colors.bg.primary, '--border': colors.border }}>
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="text-xl font-bold" style={{ color: colors.primary }}>{ride.destinationName}</h3>
+                    <h3 className="text-xl font-extrabold">{ride.destinationName}</h3>
                     <p className="text-sm" style={{ color: colors.text.secondary }}>{ride.transportMode} {ride.transportId ? `(${ride.transportId})` : ''}</p>
                   </div>
                   <span style={getStatusColor(ride.status)}>
@@ -131,12 +139,12 @@ const MyRides = () => {
                 </div>
 
                 {ride.confirmedMatches.length > 0 && (
-                  <div className="mb-4 p-3 rounded-lg" style={{ backgroundColor: colors.bg.tertiary }}>
+                  <div className="mb-4 rounded-2xl p-4" style={{ backgroundColor: colors.bg.tertiary }}>
                     <p className="text-xs mb-2" style={{ color: colors.text.tertiary }}>CO-TRAVELERS</p>
                     <div className="flex gap-2">
                       {ride.confirmedMatches.map((traveler) => (
                         <div key={traveler._id} className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ backgroundColor: colors.bg.secondary }}>
-                          <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold" style={{ backgroundColor: colors.primary, color: 'white' }}>
+                          <div className="flex h-7 w-7 items-center justify-center rounded-lg text-xs font-bold" style={{ backgroundColor: colors.primary, color: 'white' }}>
                             {traveler.name.charAt(0)}
                           </div>
                           <span className="text-sm" style={{ color: colors.text.primary }}>{traveler.name}</span>
@@ -149,8 +157,8 @@ const MyRides = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => navigate(`/ride/${ride._id}`)}
-                    className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg transition border"
-                    style={{ backgroundColor: colors.bg.tertiary, color: colors.primary, borderColor: colors.primary }}
+                    className="ghost-button flex-1"
+                    style={{ '--surface-muted': colors.bg.tertiary, '--border': colors.primary, color: colors.primary }}
                   >
                     <Edit2 size={16} />
                     View Details
@@ -158,8 +166,8 @@ const MyRides = () => {
                   {ride.status !== 'completed' && ride.status !== 'cancelled' && (
                     <button
                       onClick={() => handleCancel(ride._id)}
-                      className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition border"
-                      style={{ backgroundColor: colors.bg.tertiary, color: colors.status.error, borderColor: colors.status.error }}
+                      className="ghost-button px-4"
+                      style={{ '--surface-muted': colors.bg.tertiary, '--border': colors.status.error, color: colors.status.error }}
                     >
                       <Trash2 size={16} />
                     </button>

@@ -77,7 +77,7 @@ const Profile = () => {
           </p>
           <button
             onClick={() => navigate('/login')}
-            className="px-4 py-2 rounded-lg font-semibold"
+            className="px-4 py-2 rounded-xl font-semibold"
             style={{ backgroundColor: colors.primary, color: 'white' }}
           >
             Go to Login
@@ -88,20 +88,20 @@ const Profile = () => {
   }
 
   return (
-    <div className="p-4 h-full overflow-y-auto flex flex-col pb-20 md:pb-0 transition-colors" 
+    <div className="page-shell transition-colors" 
          style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>
-      <div className="max-w-4xl mx-auto w-full">
+      <div className="page-inner max-w-5xl">
         {/* Profile Header */}
-        <div className="p-6 rounded-2xl border w-full shadow-xl mb-6" 
+        <div className="surface rounded-2xl p-6 mb-6" 
              style={{ backgroundColor: colors.bg.primary, borderColor: colors.border }}>
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold" 
+              <div className="flex h-20 w-20 items-center justify-center rounded-2xl text-3xl font-extrabold" 
                    style={{ backgroundColor: colors.primary, color: 'white' }}>
                 {user.name.charAt(0).toUpperCase()}
               </div>
               <div>
-                <h1 className="text-2xl font-bold" style={{ color: colors.primary }}>{user.name}</h1>
+                <h1 className="text-2xl font-extrabold" style={{ color: colors.primary }}>{user.name}</h1>
                 <p style={{ color: colors.text.secondary }}>Member since 2026</p>
                 {user.averageRating && (
                   <div className="flex items-center gap-2 mt-2">
@@ -116,7 +116,7 @@ const Profile = () => {
             </div>
             <button
               onClick={() => navigate('/settings')}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg transition"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl transition"
               style={{ backgroundColor: colors.bg.tertiary, color: colors.primary }}
             >
               <Edit2 size={18} />
@@ -126,25 +126,25 @@ const Profile = () => {
 
           {/* Stats Row */}
           <div className="grid grid-cols-3 gap-4 mb-6">
-            <div className="p-3 rounded-lg text-center" style={{ backgroundColor: colors.bg.tertiary }}>
-              <p className="text-2xl font-bold" style={{ color: colors.primary }}>{user.rideCount || 0}</p>
+            <div className="p-3 rounded-xl text-center" style={{ backgroundColor: colors.bg.tertiary }}>
+              <p className="text-2xl font-extrabold" style={{ color: colors.primary }}>{user.rideCount || 0}</p>
               <p className="text-xs" style={{ color: colors.text.tertiary }}>Total Rides</p>
             </div>
-            <div className="p-3 rounded-lg text-center" style={{ backgroundColor: colors.bg.tertiary }}>
-              <p className="text-2xl font-bold" style={{ color: colors.status.success }}>{user.completedRides || 0}</p>
+            <div className="p-3 rounded-xl text-center" style={{ backgroundColor: colors.bg.tertiary }}>
+              <p className="text-2xl font-extrabold" style={{ color: colors.status.success }}>{user.completedRides || 0}</p>
               <p className="text-xs" style={{ color: colors.text.tertiary }}>Completed</p>
             </div>
-            <div className="p-3 rounded-lg text-center" style={{ backgroundColor: colors.bg.tertiary }}>
-              <p className="text-2xl font-bold" style={{ color: colors.status.info }}>{user.loyaltyPoints || 0}</p>
+            <div className="p-3 rounded-xl text-center" style={{ backgroundColor: colors.bg.tertiary }}>
+              <p className="text-2xl font-extrabold" style={{ color: colors.status.info }}>{user.loyaltyPoints || 0}</p>
               <p className="text-xs" style={{ color: colors.text.tertiary }}>Points</p>
             </div>
           </div>
         </div>
 
         {/* Personal Information */}
-        <div className="p-6 rounded-2xl border w-full mb-6" 
+        <div className="soft-card mb-6" 
              style={{ backgroundColor: colors.bg.primary, borderColor: colors.border }}>
-          <h2 className="text-xl font-bold mb-4" style={{ color: colors.text.primary }}>Personal Information</h2>
+          <h2 className="text-xl font-extrabold mb-4" style={{ color: colors.text.primary }}>Personal Information</h2>
           
           <div className="space-y-4">
             <div className="flex items-center gap-4 p-4 rounded-xl border" 
@@ -191,16 +191,16 @@ const Profile = () => {
 
         {/* Reviews Section */}
         {reviews.length > 0 && (
-          <div className="p-6 rounded-2xl border w-full mb-6" 
+          <div className="soft-card mb-6" 
                style={{ backgroundColor: colors.bg.primary, borderColor: colors.border }}>
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: colors.text.primary }}>
+            <h2 className="text-xl font-extrabold mb-4 flex items-center gap-2" style={{ color: colors.text.primary }}>
               <Star size={24} style={{ color: colors.status.warning }} />
               Reviews & Ratings
             </h2>
             
             <div className="space-y-4">
               {reviews.map((review) => (
-                <div key={review._id} className="p-4 rounded-lg border" 
+                <div key={review._id} className="p-4 rounded-xl border" 
                      style={{ backgroundColor: colors.bg.tertiary, borderColor: colors.border }}>
                   <div className="flex items-start justify-between mb-2">
                     <div>

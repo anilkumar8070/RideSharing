@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, Users, Star, Award } from 'lucide-react';
+import { TrendingUp, Users, Star, Award, XCircle, Gem, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import api from '../utils/api';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -33,153 +33,88 @@ const Analytics = () => {
   };
 
   if (loading) {
-    return <div className="p-4 h-full flex items-center justify-center transition-colors" 
-           style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>Loading...</div>;
+    return <div className="page-shell flex items-center justify-center" style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>Loading...</div>;
   }
 
-  const completionRate = stats.totalRides > 0 
+  const completionRate = stats.totalRides > 0
     ? Math.round((stats.completedRides / stats.totalRides) * 100)
     : 0;
+  const trustScore = (stats.totalRatings > 0 ? (stats.averageRating / 5) * 100 : 100).toFixed(0);
 
   return (
-    <div className="p-4 h-full overflow-y-auto pb-20 md:pb-0 transition-colors" 
-         style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-          <TrendingUp style={{ color: colors.primary }} size={32} />
-          Your Analytics
-        </h1>
-        <p className="mb-8" style={{ color: colors.text.secondary }}>Track your Onwego journey and achievements</p>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          {/* Total Rides */}
-          <div className="bg-gradient-to-br from-blue-900/30 to-blue-700/10 p-6 rounded-xl border border-blue-500/20">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-gray-400 text-sm">Total Rides</p>
-                <p className="text-3xl font-bold text-blue-300 mt-2">{stats.totalRides}</p>
-              </div>
-              <Users className="text-blue-400" size={32} />
-            </div>
+    <div className="page-shell" style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>
+      <div className="page-inner">
+        <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+          <div>
+            <p className="mb-2 text-sm font-extrabold uppercase" style={{ color: colors.primary }}>Journey health</p>
+            <h1 className="flex items-center gap-2 text-3xl font-extrabold md:text-4xl">
+              <TrendingUp style={{ color: colors.primary }} size={34} />
+              Your Analytics
+            </h1>
+            <p className="mt-2 font-medium" style={{ color: colors.text.secondary }}>Track your Onwego journey and achievements.</p>
           </div>
-
-          {/* Completed Rides */}
-          <div className="bg-gradient-to-br from-green-900/30 to-green-700/10 p-6 rounded-xl border border-green-500/20">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-gray-400 text-sm">Completed Rides</p>
-                <p className="text-3xl font-bold text-green-300 mt-2">{stats.completedRides}</p>
-                <p className="text-xs text-green-400 mt-2">Completion Rate: {completionRate}%</p>
-              </div>
-              <Award className="text-green-400" size={32} />
-            </div>
+          <div className="rounded-2xl px-5 py-4" style={{ backgroundColor: colors.bg.primary, border: `1px solid ${colors.border}` }}>
+            <p className="text-xs font-bold uppercase" style={{ color: colors.text.tertiary }}>Trust score</p>
+            <p className="text-3xl font-extrabold" style={{ color: colors.primary }}>{trustScore}%</p>
           </div>
+        </div>
 
-          {/* Cancelled Rides */}
-          <div className="bg-gradient-to-br from-red-900/30 to-red-700/10 p-6 rounded-xl border border-red-500/20">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-gray-400 text-sm">Cancelled Rides</p>
-                <p className="text-3xl font-bold text-red-300 mt-2">{stats.cancelledRides}</p>
-              </div>
-              <div className="w-12 h-12 bg-red-500/10 rounded-lg flex items-center justify-center">
-                <span className="text-xl">✕</span>
-              </div>
-            </div>
-          </div>
+        <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <StatCard icon={Users} label="Total Rides" value={stats.totalRides} hint="All rides created" color={colors.secondary} colors={colors} />
+          <StatCard icon={Award} label="Completed Rides" value={stats.completedRides} hint={`Completion Rate: ${completionRate}%`} color={colors.primary} colors={colors} />
+          <StatCard icon={XCircle} label="Cancelled Rides" value={stats.cancelledRides} hint="Trips not completed" color={colors.status.error} colors={colors} />
+          <StatCard icon={Star} label="Average Rating" value={stats.averageRating.toFixed(1)} hint={`${stats.totalRatings} ratings`} color={colors.status.warning} colors={colors} />
+          <StatCard icon={Gem} label="Loyalty Points" value={stats.loyaltyPoints} hint="Redeem for discounts" color={colors.accent} colors={colors} />
+          <StatCard icon={ShieldCheck} label="Trust Score" value={`${trustScore}%`} hint="Based on your history" color={colors.primaryDark} colors={colors} />
+        </div>
 
-          {/* Average Rating */}
-          <div className="bg-gradient-to-br from-yellow-900/30 to-yellow-700/10 p-6 rounded-xl border border-yellow-500/20">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-gray-400 text-sm">Average Rating</p>
-                <div className="mt-2 flex items-center gap-2">
-                  <p className="text-3xl font-bold text-yellow-300">{stats.averageRating.toFixed(1)}</p>
-                  <span className="text-xs text-gray-400">/ 5.0</span>
+        <section className="surface rounded-2xl p-6" style={{ '--surface': colors.bg.primary, '--border': colors.border, '--shadow': colors.shadow }}>
+          <h2 className="mb-5 text-xl font-extrabold">Performance Summary</h2>
+          <Progress label="Ride Completion Rate" value={completionRate} color={colors.primary} colors={colors} />
+          <Progress label="User Rating" value={(stats.averageRating / 5) * 100} text={`${stats.averageRating.toFixed(1)}/5.0`} color={colors.status.warning} colors={colors} />
+
+          <div className="mt-6 rounded-2xl p-4" style={{ backgroundColor: colors.bg.tertiary }}>
+            <p className="mb-3 text-sm font-extrabold" style={{ color: colors.text.primary }}>Tips to improve your profile</p>
+            <div className="grid gap-2 text-sm font-medium md:grid-cols-2" style={{ color: colors.text.secondary }}>
+              {['Complete more rides to build trust', 'Stay punctual and friendly', 'Keep your profile information fresh', 'Respond quickly to match requests'].map((tip) => (
+                <div key={tip} className="flex items-center gap-2">
+                  <CheckCircle2 size={16} style={{ color: colors.primary }} />
+                  <span>{tip}</span>
                 </div>
-                <p className="text-xs text-yellow-400 mt-2">({stats.totalRatings} ratings)</p>
-              </div>
-              <Star className="text-yellow-400" size={32} />
+              ))}
             </div>
           </div>
-
-          {/* Loyalty Points */}
-          <div className="bg-gradient-to-br from-purple-900/30 to-purple-700/10 p-6 rounded-xl border border-purple-500/20">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-gray-400 text-sm">Loyalty Points</p>
-                <p className="text-3xl font-bold text-purple-300 mt-2">{stats.loyaltyPoints}</p>
-                <p className="text-xs text-purple-400 mt-2">Redeem for discounts</p>
-              </div>
-              <div className="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center">
-                <span className="text-xl">💎</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Stats */}
-          <div className="bg-gradient-to-br from-emerald-900/30 to-emerald-700/10 p-6 rounded-xl border border-emerald-500/20">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-gray-400 text-sm">Trust Score</p>
-                <p className="text-3xl font-bold text-emerald-300 mt-2">
-                  {((stats.totalRatings > 0 ? (stats.averageRating / 5) * 100 : 100)).toFixed(0)}%
-                </p>
-                <p className="text-xs text-emerald-400 mt-2">Based on your history</p>
-              </div>
-              <div className="w-12 h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center">
-                <span className="text-xl">✓</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Additional Stats Section */}
-        <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
-          <h2 className="text-xl font-bold mb-4">Performance Summary</h2>
-          
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-gray-400">Ride Completion Rate</span>
-                <span className="text-primary font-semibold">{completionRate}%</span>
-              </div>
-              <div className="w-full bg-gray-900 h-3 rounded-full overflow-hidden">
-                <div
-                  className="bg-gradient-to-r from-primary to-emerald-500 h-full transition-all"
-                  style={{ width: `${completionRate}%` }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-gray-400">User Rating</span>
-                <span className="text-primary font-semibold">{stats.averageRating.toFixed(1)}/5.0</span>
-              </div>
-              <div className="w-full bg-gray-900 h-3 rounded-full overflow-hidden">
-                <div
-                  className="bg-gradient-to-r from-yellow-500 to-orange-500 h-full transition-all"
-                  style={{ width: `${(stats.averageRating / 5) * 100}%` }}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6 p-4 bg-gray-900/50 rounded-lg border border-gray-700">
-            <p className="text-sm text-gray-400 mb-3">💡 Tips to improve your profile:</p>
-            <ul className="text-sm text-gray-300 space-y-2">
-              <li>✓ Complete more rides to build trust</li>
-              <li>✓ Maintain a high rating by being punctual and friendly</li>
-              <li>✓ Update your profile information regularly</li>
-              <li>✓ Respond quickly to match requests</li>
-            </ul>
-          </div>
-        </div>
+        </section>
       </div>
     </div>
   );
 };
+
+const StatCard = ({ icon: Icon, label, value, hint, color, colors }) => (
+  <div className="soft-card" style={{ '--surface': colors.bg.primary, '--border': colors.border }}>
+    <div className="flex justify-between gap-4">
+      <div>
+        <p className="text-sm font-bold" style={{ color: colors.text.tertiary }}>{label}</p>
+        <p className="mt-2 text-3xl font-extrabold" style={{ color }}>{value}</p>
+        <p className="mt-2 text-xs font-semibold" style={{ color: colors.text.secondary }}>{hint}</p>
+      </div>
+      <div className="icon-tile" style={{ '--tile': colors.bg.tertiary, '--tile-fg': color }}>
+        <Icon size={24} />
+      </div>
+    </div>
+  </div>
+);
+
+const Progress = ({ label, value, text, color, colors }) => (
+  <div className="mb-5 last:mb-0">
+    <div className="mb-2 flex justify-between text-sm font-bold">
+      <span style={{ color: colors.text.secondary }}>{label}</span>
+      <span style={{ color }}>{text || `${Math.round(value)}%`}</span>
+    </div>
+    <div className="h-3 overflow-hidden rounded-full" style={{ backgroundColor: colors.bg.tertiary }}>
+      <div className="h-full rounded-full transition-all" style={{ width: `${Math.max(0, Math.min(100, value))}%`, background: `linear-gradient(90deg, ${color}, ${colors.secondary})` }} />
+    </div>
+  </div>
+);
 
 export default Analytics;

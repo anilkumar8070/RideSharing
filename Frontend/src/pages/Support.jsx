@@ -90,21 +90,23 @@ const Support = () => {
   };
 
   if (loading) {
-    return <div className="p-4 h-full text-white flex items-center justify-center">Loading...</div>;
+    return <div className="page-shell flex items-center justify-center" style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>Loading...</div>;
   }
 
   return (
-    <div className="p-4 h-full overflow-y-auto pb-20 md:pb-0" style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>
-      <div className="max-w-3xl mx-auto">
+    <div className="page-shell" style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>
+      <div className="page-inner max-w-4xl">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <HelpCircle className="text-primary" size={32} />
-            Support & Feedback
-          </h1>
+          <div>
+            <p className="mb-2 text-sm font-extrabold uppercase" style={{ color: colors.primary }}>Help desk</p>
+            <h1 className="text-3xl font-extrabold flex items-center gap-2">
+              <HelpCircle style={{ color: colors.primary }} size={32} />
+              Support & Feedback
+            </h1>
+          </div>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold transition hover:opacity-80"
-            style={{ backgroundColor: colors.primary, color: 'white' }}
+            className="primary-button"
           >
             <Plus size={18} />
             New Ticket
@@ -113,15 +115,15 @@ const Support = () => {
 
         {/* Create Ticket Form */}
         {showForm && (
-          <div className="p-6 rounded-2xl border mb-6" style={{ backgroundColor: colors.bg.tertiary, borderColor: colors.border }}>
-            <h2 className="text-xl font-bold mb-4">Create Support Ticket</h2>
+          <div className="surface rounded-2xl p-6 mb-6" style={{ backgroundColor: colors.bg.primary, borderColor: colors.border }}>
+            <h2 className="text-xl font-extrabold mb-4">Create Support Ticket</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2" style={{ color: colors.text.secondary }}>Issue Type</label>
                 <select
                   value={formData.type}
                   onChange={(e) => setFormData({...formData, type: e.target.value})}
-                  className="w-full px-4 py-2 rounded-xl border outline-none transition-colors"
+                  className="field"
                   style={{ backgroundColor: colors.bg.primary, borderColor: colors.border, color: colors.text.primary }}
                 >
                   <option value="bug-report">Bug Report</option>
@@ -137,7 +139,7 @@ const Support = () => {
                 <select
                   value={formData.priority}
                   onChange={(e) => setFormData({...formData, priority: e.target.value})}
-                  className="w-full px-4 py-2 rounded-xl border outline-none transition-colors"
+                  className="field"
                   style={{ backgroundColor: colors.bg.primary, borderColor: colors.border, color: colors.text.primary }}
                 >
                   <option value="low">Low</option>
@@ -155,7 +157,7 @@ const Support = () => {
                   onChange={(e) => setFormData({...formData, title: e.target.value})}
                   placeholder="Brief title of your issue"
                   maxLength="100"
-                  className="w-full px-4 py-2 rounded-xl border outline-none transition-colors"
+                  className="field"
                   style={{ backgroundColor: colors.bg.primary, borderColor: colors.border, color: colors.text.primary }}
                 />
               </div>
@@ -168,7 +170,7 @@ const Support = () => {
                   placeholder="Describe your issue in detail..."
                   maxLength="2000"
                   rows="5"
-                  className="w-full px-4 py-2 rounded-xl border outline-none resize-none transition-colors"
+                  className="field resize-none"
                   style={{ backgroundColor: colors.bg.primary, borderColor: colors.border, color: colors.text.primary }}
                 />
               </div>
@@ -177,16 +179,15 @@ const Support = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 py-3 rounded-xl font-bold transition disabled:opacity-50 hover:opacity-80"
-                  style={{ backgroundColor: colors.primary, color: 'white' }}
+                  className="primary-button flex-1 disabled:opacity-50"
                 >
                   {submitting ? 'Submitting...' : 'Submit Ticket'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="flex-1 py-3 rounded-xl font-bold transition border hover:bg-opacity-10"
-                  style={{ backgroundColor: 'transparent', borderColor: colors.border, color: colors.text.primary }}
+                  className="ghost-button flex-1"
+                  style={{ '--surface-muted': colors.bg.tertiary, '--border': colors.border, color: colors.text.primary }}
                 >
                   Cancel
                 </button>
@@ -197,24 +198,25 @@ const Support = () => {
 
         <div className="space-y-4">
           {tickets.length === 0 ? (
-            <div className="p-12 rounded-2xl border text-center transition-colors" style={{ backgroundColor: colors.bg.tertiary, borderColor: colors.border }}>
-              <MessageSquare size={48} className="mx-auto mb-4" style={{ color: colors.text.tertiary }} />
-              <p className="mb-4" style={{ color: colors.text.secondary }}>No support tickets yet</p>
+            <div className="surface rounded-2xl p-12 text-center transition-colors" style={{ backgroundColor: colors.bg.primary, borderColor: colors.border }}>
+              <div className="icon-tile mx-auto mb-4 h-16 w-16" style={{ '--tile': colors.bg.tertiary, '--tile-fg': colors.primary }}>
+                <MessageSquare size={32} />
+              </div>
+              <p className="mb-4 font-semibold" style={{ color: colors.text.secondary }}>No support tickets yet</p>
               <button
                 onClick={() => setShowForm(true)}
-                className="px-6 py-3 rounded-xl font-bold transition hover:opacity-80"
-                style={{ backgroundColor: colors.primary, color: 'white' }}
+                className="primary-button"
               >
                 Create One
               </button>
             </div>
           ) : (
             tickets.map((ticket) => (
-              <div key={ticket._id} className="p-5 rounded-2xl border transition-colors hover:shadow-lg" 
-                   style={{ backgroundColor: colors.bg.tertiary, borderColor: colors.border }}>
+              <div key={ticket._id} className="soft-card" 
+                   style={{ backgroundColor: colors.bg.primary, borderColor: colors.border }}>
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex-1">
-                    <h3 className="text-lg font-bold" style={{ color: colors.text.primary }}>{ticket.title}</h3>
+                    <h3 className="text-lg font-extrabold" style={{ color: colors.text.primary }}>{ticket.title}</h3>
                     <p className="text-sm mt-1" style={{ color: colors.text.secondary }}>{ticket.description}</p>
                   </div>
                   <div className="flex gap-2">
@@ -233,9 +235,9 @@ const Support = () => {
                 </div>
 
                 {ticket.response?.message && (
-                  <div className="mt-3 p-3 bg-green-900/20 border border-green-700/30 rounded-lg">
-                    <p className="text-xs text-green-400 font-semibold mb-1">RESPONSE FROM SUPPORT</p>
-                    <p className="text-sm text-gray-200">{ticket.response.message}</p>
+                  <div className="mt-3 rounded-xl border p-3" style={{ backgroundColor: colors.bg.tertiary, borderColor: colors.status.success }}>
+                    <p className="text-xs font-semibold mb-1" style={{ color: colors.status.success }}>RESPONSE FROM SUPPORT</p>
+                    <p className="text-sm" style={{ color: colors.text.secondary }}>{ticket.response.message}</p>
                   </div>
                 )}
               </div>

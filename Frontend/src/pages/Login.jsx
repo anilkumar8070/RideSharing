@@ -6,9 +6,8 @@ import { z } from 'zod';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
 import { useTheme } from '../contexts/ThemeContext';
-import { Moon, Sun } from 'lucide-react';
+import { ArrowLeft, LockKeyhole, Moon, ShieldCheck, Sun, Users, WalletCards } from 'lucide-react';
 
-// Define validation schemas matching our backend Zod schemas
 const loginSchema = z.object({
   identifier: z.string().min(3, 'Email or Phone is required'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
@@ -26,7 +25,6 @@ const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const { isDark, toggleTheme, colors } = useTheme();
 
-  // Using react-hook-form with dynamic schema based on login vs register
   const {
     register,
     handleSubmit,
@@ -38,31 +36,23 @@ const Login = () => {
 
   const switchMode = (mode) => {
     setIsLogin(mode);
-    reset(); // clear form errors and values on switch
+    reset();
   };
 
   const onSubmit = async (data) => {
     try {
       const isEmail = data.identifier.includes('@');
-      let endpoint = isLogin ? '/auth/login' : '/auth/register';
-      let payload;
+      const endpoint = isLogin ? '/auth/login' : '/auth/register';
+      const payload = isLogin
+        ? { identifier: data.identifier, password: data.password }
+        : {
+            name: data.name,
+            address: data.address,
+            email: isEmail ? data.identifier : undefined,
+            phone: !isEmail ? data.identifier : undefined,
+            password: data.password,
+          };
 
-      if (isLogin) {
-        payload = {
-          identifier: data.identifier,
-          password: data.password,
-        };
-      } else {
-        payload = {
-          name: data.name,
-          address: data.address,
-          email: isEmail ? data.identifier : undefined,
-          phone: !isEmail ? data.identifier : undefined,
-          password: data.password,
-        };
-      }
-
-      // use the configured axios instance
       const res = await api.post(endpoint, payload);
 
       if (res.data.success) {
@@ -78,141 +68,104 @@ const Login = () => {
     }
   };
 
-  // Helper component for error display
-  const ErrorMessage = ({ error }) => {
-    if (!error) return null;
-    return <span className="text-red-400 text-xs mt-1 ml-1 block text-left">{error.message}</span>;
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center h-full px-4 overflow-y-auto pb-20 transition-colors" 
-         style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>
-      
-      {/* Theme Toggle */}
-      <button
-        onClick={toggleTheme}
-        className="absolute top-4 right-4 p-3 rounded-full transition"
-        style={{ backgroundColor: colors.bg.tertiary, color: colors.primary }}
-      >
-        {isDark ? <Sun size={24} /> : <Moon size={24} />}
-      </button>
-
-      <h1 className="text-4xl font-bold mb-2 tracking-tighter" style={{ color: colors.primary }}>Onwego</h1>
-      <p className="mb-8 text-center text-sm" style={{ color: colors.text.secondary }}>Find co-travelers and split your cab fare!</p>
-
-      <div className="flex gap-2 mb-8 p-1 rounded-lg" style={{ backgroundColor: colors.bg.tertiary }}>
-        <button
-          type="button"
-          onClick={() => switchMode(true)}
-          className={`px-8 py-2 rounded-md font-semibold transition`}
-          style={{
-            backgroundColor: isLogin ? colors.primary : 'transparent',
-            color: isLogin ? 'white' : colors.text.secondary
-          }}
-        >
-          Login
+    <div className="min-h-screen overflow-y-auto px-4 py-6" style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>
+      <div className="mx-auto flex max-w-6xl items-center justify-between">
+        <button onClick={() => navigate('/')} className="ghost-button" style={{ '--surface-muted': colors.bg.primary, '--border': colors.border, color: colors.text.primary }}>
+          <ArrowLeft size={18} /> Back
         </button>
-        <button
-          type="button"
-          onClick={() => switchMode(false)}
-          className={`px-8 py-2 rounded-md font-semibold transition`}
-          style={{
-            backgroundColor: !isLogin ? colors.primary : 'transparent',
-            color: !isLogin ? 'white' : colors.text.secondary
-          }}
-        >
-          Sign Up
+        <button onClick={toggleTheme} className="rounded-xl p-3 transition hover:scale-105" style={{ backgroundColor: colors.bg.primary, color: colors.primary }}>
+          {isDark ? <Sun size={22} /> : <Moon size={22} />}
         </button>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-sm flex flex-col gap-4">
-        {!isLogin && (
-          <>
-            <div>
-              <input
-                type="text"
-                placeholder="Your Name (e.g. Rahul)"
-                autoComplete="name"
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-1 transition"
-                style={{
-                  backgroundColor: colors.bg.primary,
-                  borderColor: errors.name ? '#EF4444' : colors.border,
-                  color: colors.text.primary
-                }}
-                {...register('name')}
-              />
-              <ErrorMessage error={errors.name} />
-            </div>
-            <div>
-              <input
-                type="text"
-                placeholder="Address"
-                autoComplete="street-address"
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-1 transition"
-                style={{
-                  backgroundColor: colors.bg.primary,
-                  borderColor: errors.address ? '#EF4444' : colors.border,
-                  color: colors.text.primary
-                }}
-                {...register('address')}
-              />
-              <ErrorMessage error={errors.address} />
-            </div>
-          </>
-        )}
+      <main className="mx-auto grid min-h-[calc(100vh-96px)] max-w-6xl items-center gap-8 py-8 lg:grid-cols-[1fr_430px]">
+        <section className="hidden lg:block">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-extrabold" style={{ backgroundColor: colors.primaryLight, color: colors.primaryDark }}>
+            <ShieldCheck size={16} />
+            Secure traveler network
+          </div>
+          <h1 className="max-w-2xl text-5xl font-extrabold leading-tight">Get matched before the cab queue gets crowded.</h1>
+          <p className="mt-5 max-w-xl text-lg font-medium" style={{ color: colors.text.secondary }}>
+            Save trip details, find nearby travelers, and coordinate the final ride home from one clean dashboard.
+          </p>
+          <div className="mt-8 grid max-w-xl gap-4 sm:grid-cols-2">
+            <Benefit icon={Users} title="Community" text="Match with travelers from your route." colors={colors} />
+            <Benefit icon={WalletCards} title="Savings" text="Split fares without awkward settling." colors={colors} />
+          </div>
+        </section>
 
-        <div>
-          <input
-            type="text"
-            placeholder="Phone Number or Email"
-            autoComplete="username"
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-1 transition"
-            style={{
-              backgroundColor: colors.bg.primary,
-              borderColor: errors.identifier ? '#EF4444' : colors.border,
-              color: colors.text.primary
-            }}
-            {...register('identifier')}
-          />
-          <ErrorMessage error={errors.identifier} />
-        </div>
+        <section className="surface rounded-2xl p-6 md:p-8" style={{ '--surface': colors.bg.primary, '--border': colors.border, '--shadow': colors.shadow }}>
+          <div className="mb-7 text-center">
+            <img src="/logo.png" alt="Onwego Logo" className="mx-auto mb-3 h-14 w-14 rounded-2xl object-contain" />
+            <h1 className="text-3xl font-extrabold">Onwego</h1>
+            <p className="mt-2 text-sm font-medium" style={{ color: colors.text.secondary }}>
+              {isLogin ? 'Welcome back. Your next match is waiting.' : 'Create your traveler profile in a minute.'}
+            </p>
+          </div>
 
-        <div>
-          <input
-            type="password"
-            placeholder="Password (min 6 chars)"
-            autoComplete={isLogin ? 'current-password' : 'new-password'}
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-1 transition"
-            style={{
-              backgroundColor: colors.bg.primary,
-              borderColor: errors.password ? '#EF4444' : colors.border,
-              color: colors.text.primary
-            }}
-            {...register('password')}
-          />
-          <ErrorMessage error={errors.password} />
-        </div>
+          <div className="mb-6 grid grid-cols-2 rounded-xl p-1" style={{ backgroundColor: colors.bg.tertiary }}>
+            <button type="button" onClick={() => switchMode(true)} className="rounded-lg py-2 font-extrabold transition"
+              style={{ backgroundColor: isLogin ? colors.bg.primary : 'transparent', color: isLogin ? colors.primary : colors.text.secondary }}>
+              Login
+            </button>
+            <button type="button" onClick={() => switchMode(false)} className="rounded-lg py-2 font-extrabold transition"
+              style={{ backgroundColor: !isLogin ? colors.bg.primary : 'transparent', color: !isLogin ? colors.primary : colors.text.secondary }}>
+              Sign Up
+            </button>
+          </div>
 
-        <button 
-          type="submit" 
-          disabled={isSubmitting}
-          className="text-lg font-bold py-3 mt-4 rounded-lg transition disabled:opacity-70 flex justify-center items-center h-14"
-          style={{ 
-            backgroundColor: colors.primary,
-            color: 'white'
-          }}
-        >
-          {isSubmitting ? (
-            <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-          ) : isLogin ? (
-            'Secure Login'
-          ) : (
-            'Create Account'
-          )}
-        </button>
-      </form>
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+            {!isLogin && (
+              <>
+                <Field label="Full name" error={errors.name} colors={colors}>
+                  <input type="text" placeholder="Rahul Sharma" autoComplete="name" className="field" {...register('name')} />
+                </Field>
+                <Field label="Address" error={errors.address} colors={colors}>
+                  <input type="text" placeholder="Your home address" autoComplete="street-address" className="field" {...register('address')} />
+                </Field>
+              </>
+            )}
+
+            <Field label="Phone or email" error={errors.identifier} colors={colors}>
+              <input type="text" placeholder="you@example.com" autoComplete="username" className="field" {...register('identifier')} />
+            </Field>
+
+            <Field label="Password" error={errors.password} colors={colors}>
+              <input type="password" placeholder="Minimum 6 characters" autoComplete={isLogin ? 'current-password' : 'new-password'} className="field" {...register('password')} />
+            </Field>
+
+            <button type="submit" disabled={isSubmitting} className="primary-button mt-2 h-14 text-lg">
+              {isSubmitting ? <div className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent" /> : (
+                <>
+                  <LockKeyhole size={20} />
+                  {isLogin ? 'Secure Login' : 'Create Account'}
+                </>
+              )}
+            </button>
+          </form>
+        </section>
+      </main>
     </div>
   );
 };
 
-export default Login; 
+const Field = ({ label, error, children, colors }) => (
+  <label className="block">
+    <span className="mb-2 block text-sm font-bold" style={{ color: colors.text.secondary }}>{label}</span>
+    {children}
+    {error && <span className="mt-1 block text-xs font-semibold" style={{ color: colors.status.error }}>{error.message}</span>}
+  </label>
+);
+
+const Benefit = ({ icon: Icon, title, text, colors }) => (
+  <div className="soft-card" style={{ '--surface': colors.bg.primary, '--border': colors.border }}>
+    <div className="icon-tile mb-4" style={{ '--tile': colors.bg.tertiary, '--tile-fg': colors.primary }}>
+      <Icon size={22} />
+    </div>
+    <h3 className="font-extrabold">{title}</h3>
+    <p className="mt-1 text-sm font-medium" style={{ color: colors.text.secondary }}>{text}</p>
+  </div>
+);
+
+export default Login;

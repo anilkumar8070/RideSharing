@@ -79,24 +79,25 @@ const Settings = () => {
   };
 
   if (loading) {
-    return <div className="p-4 h-full flex items-center justify-center transition-colors" 
+    return <div className="page-shell flex items-center justify-center transition-colors" 
            style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>Loading...</div>;
   }
 
   return (
-    <div className="p-4 h-full overflow-y-auto pb-20 md:pb-0 transition-colors" 
+    <div className="page-shell transition-colors" 
          style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
+      <div className="page-inner max-w-3xl">
+        <p className="mb-2 text-sm font-extrabold uppercase" style={{ color: colors.primary }}>Preferences</p>
+        <h1 className="text-3xl font-extrabold mb-2 flex items-center gap-2">
           <SettingsIcon style={{ color: colors.primary }} size={32} />
           Settings & Preferences
         </h1>
         <p className="mb-8" style={{ color: colors.text.secondary }}>Customize your ride experience</p>
 
         {/* Ride Preferences */}
-        <div className="p-6 rounded-xl border mb-6 transition-colors" 
+        <div className="surface rounded-2xl p-6 mb-6 transition-colors" 
              style={{ backgroundColor: colors.bg.primary, borderColor: colors.border }}>
-          <h2 className="text-xl font-bold mb-6" style={{ color: colors.text.primary }}>Ride Preferences</h2>
+          <h2 className="text-xl font-extrabold mb-6" style={{ color: colors.text.primary }}>Ride Preferences</h2>
           
           <div className="space-y-4">
             <div>
@@ -104,7 +105,7 @@ const Settings = () => {
               <select
                 value={preferences.smoking}
                 onChange={(e) => handlePreferenceChange('smoking', e.target.value)}
-                className="w-full px-4 py-2 rounded-lg focus:outline-none border"
+                className="field"
                 style={{ backgroundColor: colors.bg.tertiary, borderColor: colors.border, color: colors.text.primary }}
               >
                 <option value="no-preference">No Preference</option>
@@ -118,7 +119,7 @@ const Settings = () => {
               <select
                 value={preferences.conversation}
                 onChange={(e) => handlePreferenceChange('conversation', e.target.value)}
-                className="w-full px-4 py-2 rounded-lg focus:outline-none border"
+                className="field"
                 style={{ backgroundColor: colors.bg.tertiary, borderColor: colors.border, color: colors.text.primary }}
               >
                 <option value="no-preference">No Preference</option>
@@ -132,7 +133,7 @@ const Settings = () => {
               <select
                 value={preferences.music}
                 onChange={(e) => handlePreferenceChange('music', e.target.value)}
-                className="w-full px-4 py-2 rounded-lg focus:outline-none border"
+                className="field"
                 style={{ backgroundColor: colors.bg.tertiary, borderColor: colors.border, color: colors.text.primary }}
               >
                 <option value="no-preference">No Preference</option>
@@ -146,7 +147,7 @@ const Settings = () => {
               <select
                 value={preferences.genderPreference}
                 onChange={(e) => handlePreferenceChange('genderPreference', e.target.value)}
-                className="w-full px-4 py-2 rounded-lg focus:outline-none border"
+                className="field"
                 style={{ backgroundColor: colors.bg.tertiary, borderColor: colors.border, color: colors.text.primary }}
               >
                 <option value="any">Any</option>
@@ -168,8 +169,7 @@ const Settings = () => {
             <button
               onClick={savePreferences}
               disabled={saving}
-              className="w-full mt-4 flex items-center justify-center gap-2 py-2 rounded-lg font-semibold transition disabled:opacity-50"
-              style={{ backgroundColor: colors.primary, color: 'white' }}
+              className="primary-button w-full mt-4 disabled:opacity-50"
             >
               <Save size={18} />
               Save Preferences
@@ -178,9 +178,9 @@ const Settings = () => {
         </div>
 
         {/* Notification Settings */}
-        <div className="p-6 rounded-xl border transition-colors" 
+        <div className="surface rounded-2xl p-6 transition-colors" 
              style={{ backgroundColor: colors.bg.primary, borderColor: colors.border }}>
-          <h2 className="text-xl font-bold mb-6 flex items-center gap-2" style={{ color: colors.text.primary }}>
+          <h2 className="text-xl font-extrabold mb-6 flex items-center gap-2" style={{ color: colors.text.primary }}>
             <Bell size={20} style={{ color: colors.primary }} />
             Notification Settings
           </h2>
@@ -231,8 +231,7 @@ const Settings = () => {
             <button
               onClick={saveNotifications}
               disabled={saving}
-              className="w-full mt-4 flex items-center justify-center gap-2 py-2 rounded-lg font-semibold transition disabled:opacity-50"
-              style={{ backgroundColor: colors.primary, color: 'white' }}
+              className="primary-button w-full mt-4 disabled:opacity-50"
             >
               <Save size={18} />
               Save Settings

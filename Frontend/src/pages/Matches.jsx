@@ -72,7 +72,7 @@ const Matches = () => {
 
   if (loading) {
     return (
-      <div className="p-4 h-full flex items-center justify-center transition-colors" 
+      <div className="page-shell flex items-center justify-center transition-colors" 
            style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>
         <div className="text-center">
           <div className="w-12 h-12 border-4 rounded-full animate-spin mx-auto mb-4" 
@@ -84,22 +84,29 @@ const Matches = () => {
   }
 
   return (
-    <div className="p-4 h-full overflow-y-auto pb-20 md:pb-0 transition-colors" 
+    <div className="page-shell transition-colors" 
          style={{ backgroundColor: colors.bg.secondary, color: colors.text.primary }}>
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">Travel Buddies Found</h1>
-        <p className="mb-8" style={{ color: colors.text.secondary }}>Finding people traveling on your exact route...</p>
+      <div className="page-inner max-w-5xl">
+        <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+          <div>
+            <p className="mb-2 text-sm font-extrabold uppercase" style={{ color: colors.primary }}>Potential co-travelers</p>
+            <h1 className="text-3xl font-extrabold md:text-4xl">Travel Buddies Found</h1>
+            <p className="mt-2 font-medium" style={{ color: colors.text.secondary }}>People traveling on your route appear here.</p>
+          </div>
+          <button onClick={() => navigate('/create-ride')} className="primary-button">Create Ride</button>
+        </div>
 
         {matches.length === 0 ? (
-          <div className="p-12 rounded-2xl border text-center" 
-               style={{ backgroundColor: colors.bg.primary, borderColor: colors.border }}>
-            <MapPin size={48} style={{ color: colors.text.tertiary }} className="mx-auto mb-4" />
-            <p className="mb-4" style={{ color: colors.text.secondary }}>No matches found yet</p>
-            <p className="text-sm mb-6" style={{ color: colors.text.tertiary }}>Post a ride to find co-travelers heading your way</p>
+          <div className="surface rounded-2xl p-12 text-center" 
+               style={{ '--surface': colors.bg.primary, '--border': colors.border, '--shadow': colors.shadow }}>
+            <div className="icon-tile mx-auto mb-4 h-16 w-16" style={{ '--tile': colors.bg.tertiary, '--tile-fg': colors.primary }}>
+              <MapPin size={32} />
+            </div>
+            <p className="mb-2 text-xl font-extrabold">No matches found yet</p>
+            <p className="mb-6 text-sm font-medium" style={{ color: colors.text.secondary }}>Post a ride to find co-travelers heading your way.</p>
             <button
               onClick={() => navigate('/create-ride')}
-              className="px-6 py-2 rounded-lg font-semibold transition"
-              style={{ backgroundColor: colors.primary, color: 'white' }}
+              className="primary-button"
             >
               Create a Ride
             </button>
@@ -107,16 +114,16 @@ const Matches = () => {
         ) : (
           <div className="space-y-4">
             {matches.map((match) => (
-              <div key={match.matchRideId} className="p-6 rounded-xl border transition" 
-                   style={{ backgroundColor: colors.bg.primary, borderColor: colors.border }}>
+              <div key={match.matchRideId} className="soft-card" 
+                   style={{ '--surface': colors.bg.primary, '--border': colors.border }}>
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-4 flex-1">
-                    <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold"
-                         style={{ backgroundColor: colors.primary, color: 'white' }}>
+                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-extrabold text-white"
+                         style={{ background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})` }}>
                       {match.traveler.name.charAt(0)}
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold" style={{ color: colors.primary }}>{match.traveler.name}</h3>
+                      <h3 className="text-xl font-extrabold">{match.traveler.name}</h3>
                       <div className="flex items-center gap-2 text-sm">
                         <Star size={16} style={{ color: colors.status.warning }} />
                         <span style={{ color: colors.text.secondary }}>{match.traveler.averageRating?.toFixed(1) || 5.0}/5.0</span>
@@ -182,7 +189,7 @@ const Matches = () => {
 
                 {/* Fare Information */}
                 {!['Train', 'Flight', 'Bus'].includes(match.transportMode) && (
-                  <div className="p-3 rounded-lg mb-4" style={{ backgroundColor: colors.bg.tertiary }}>
+                  <div className="mb-4 rounded-2xl p-4" style={{ backgroundColor: colors.bg.tertiary }}>
                     <p className="text-xs mb-2" style={{ color: colors.text.tertiary }}>FARE ESTIMATE</p>
                     <div className="flex justify-between items-center">
                       <div>
@@ -205,8 +212,8 @@ const Matches = () => {
                   {match.isMutualMatch ? (
                     <button
                       onClick={() => handleChat(match.matchRideId)}
-                      className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg transition font-semibold border"
-                      style={{ backgroundColor: colors.bg.tertiary, color: colors.primary, borderColor: colors.primary }}
+                      className="ghost-button flex-1"
+                      style={{ '--surface-muted': colors.bg.tertiary, '--border': colors.primary, color: colors.primary }}
                     >
                       <MessageCircle size={18} />
                       Chat
@@ -215,8 +222,8 @@ const Matches = () => {
                     <button
                       onClick={() => handleAccept(match.matchRideId)}
                       disabled={match.hasAccepted}
-                      className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg transition font-semibold border disabled:opacity-50"
-                      style={{ backgroundColor: colors.bg.tertiary, color: colors.status.success, borderColor: colors.status.success }}
+                      className="ghost-button flex-1 disabled:opacity-50"
+                      style={{ '--surface-muted': colors.bg.tertiary, '--border': colors.status.success, color: colors.status.success }}
                     >
                       <Check size={18} />
                       {match.hasAccepted ? 'Pending...' : 'Accept'}
@@ -224,8 +231,8 @@ const Matches = () => {
                   )}
                   <button
                     onClick={() => handleReject(match.traveler._id)}
-                    className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg transition font-semibold border"
-                    style={{ backgroundColor: colors.bg.tertiary, color: colors.status.error, borderColor: colors.status.error }}
+                    className="ghost-button flex-1"
+                    style={{ '--surface-muted': colors.bg.tertiary, '--border': colors.status.error, color: colors.status.error }}
                   >
                     <X size={18} />
                     Reject
